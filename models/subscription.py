@@ -51,10 +51,9 @@ class Subscription(models.Model):
     )
     next_renewal_date = fields.Date(
         string='Next Renewal Date',
-        compute='_compute_next_renewal_date',
-        store=True,
+        required=True,
         tracking=True,
-        help='Calculated next payment due date'
+        help='Next payment due date'
     )
     
     # Financial
@@ -106,6 +105,16 @@ class Subscription(models.Model):
     # Notes
     description = fields.Html(string='Notes')
     
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to compute next_renewal_date if not provided."""
+        for vals in vals_list:
+            if 'next_renewal_date' not in vals and 'date_start' in vals and 'billing_interval' in vals:
+                date_start = fields.Date.to_date(vals['date_start'])
+                billing_interval = vals['billing_interval']
+                vals['next_renewal_date'] = date_start + relativedelta(months=billing_interval)
+        return super(Subscription, self).create(vals_list)
+    
     @api.depends('service_id', 'partner_id')
     def _compute_name(self):
         """Generate subscription reference name."""
@@ -115,21 +124,29 @@ class Subscription(models.Model):
             else:
                 sub.name = "New Subscription"
     
-    @api.depends('date_start', 'billing_interval', 'last_bill_id.payment_state')
-    def _compute_next_renewal_date(self):
-        """Calculate next renewal date based on start date and billing interval."""
+    @api.onchange('date_start', 'billing_interval')
+    def _onchange_compute_next_renewal_date(self):
+        """Calculate initial next renewal date when creating subscription."""
         for sub in self:
-            if sub.date_start and sub.billing_interval:
-                # If bill is paid, extend from current next_renewal_date or date_start
-                if sub.last_bill_id and sub.last_bill_id.payment_state == 'paid':
-                    # Start from the last calculated renewal date or the start date
-                    base_date = sub.next_renewal_date or sub.date_start
-                    sub.next_renewal_date = base_date + relativedelta(months=sub.billing_interval)
-                else:
-                    # Calculate from start date
-                    sub.next_renewal_date = sub.date_start + relativedelta(months=sub.billing_interval)
-            else:
-                sub.next_renewal_date = False
+            if sub.date_start and sub.billing_interval and not sub.next_renewal_date:
+                sub.next_renewal_date = sub.date_start + relativedelta(months=sub.billing_interval)
+    
+    def renew_subscription(self):
+        """Renew subscription by extending the next renewal date.
+        This should be called when a vendor bill is marked as paid.
+        """
+        self.ensure_one()
+        if self.next_renewal_date and self.billing_interval:
+            new_renewal_date = self.next_renewal_date + relativedelta(months=self.billing_interval)
+            self.write({
+                'next_renewal_date': new_renewal_date,
+            })
+            self.message_post(
+                body=f"Subscription renewed. New renewal date: {new_renewal_date}",
+                subject="Subscription Renewed"
+            )
+            return True
+        return False
     
     @api.depends('next_renewal_date')
     def _compute_days_left(self):
@@ -253,3 +270,36 @@ class Subscription(models.Model):
                     'user_id': user_id,
                     'date_deadline': date.today(),
                 })
+
+
+class AccountMove(models.Model):
+    """Extend account.move to trigger subscription renewal when bill is paid."""
+    _inherit = 'account.move'
+    
+    subscription_ids = fields.One2many(
+        'sm.subscription',
+        'last_bill_id',
+        string='Related Subscriptions',
+        help='Subscriptions linked to this vendor bill'
+    )
+    
+    def action_post(self):
+        """Override to check for subscription renewal when bill is paid."""
+        res = super(AccountMove, self).action_post()
+        # Check if this is a paid vendor bill with linked subscriptions
+        for move in self:
+            if move.move_type == 'in_invoice' and move.payment_state == 'paid':
+                for subscription in move.subscription_ids:
+                    subscription.renew_subscription()
+        return res
+    
+    def _write(self, vals):
+        """Override write to detect when payment_state changes to paid."""
+        res = super(AccountMove, self)._write(vals)
+        if 'payment_state' in vals and vals['payment_state'] == 'paid':
+            for move in self:
+                if move.move_type == 'in_invoice':
+                    for subscription in move.subscription_ids:
+                        subscription.renew_subscription()
+        return res
+
