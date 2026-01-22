@@ -6,7 +6,6 @@
         <menuitem id="menu_subscription_manager_root"
                   name="Subscription Manager"
                   sequence="10"
-                  web_icon="subscription_manager,static/description/icon.png"
                   groups="group_subscription_manager"/>
         
         <!-- Dashboard -->

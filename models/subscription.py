@@ -186,7 +186,7 @@ class Subscription(models.Model):
     def _create_renewal_reminder(self, subscription, days_before):
         """Create activity reminder for renewal."""
         # Find Finance users
-        finance_group = self.env.ref('subscription_manager.group_subscription_finance', raise_if_not_found=False)
+        finance_group = self.env.ref('odoo_subscription_monitoring.group_subscription_finance', raise_if_not_found=False)
         if not finance_group:
             return
         
@@ -222,7 +222,7 @@ class Subscription(models.Model):
     
     def _create_urgent_reminder(self, subscription):
         """Create urgent activity for expired subscription."""
-        finance_group = self.env.ref('subscription_manager.group_subscription_finance', raise_if_not_found=False)
+        finance_group = self.env.ref('odoo_subscription_monitoring.group_subscription_finance', raise_if_not_found=False)
         if not finance_group:
             return
         
