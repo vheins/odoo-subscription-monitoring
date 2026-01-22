@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Main Menu -->
+        <menuitem id="menu_subscription_manager_root"
+                  name="Subscription Manager"
+                  sequence="10"
+                  groups="group_subscription_manager"/>
+        
+        <!-- Dashboard -->
+        <menuitem id="menu_subscription_dashboard"
+                  name="Dashboard"
+                  parent="menu_subscription_manager_root"
+                  action="action_subscription_dashboard_kanban"
+                  sequence="1"/>
+        
+        <!-- Services -->
+        <menuitem id="menu_subscription_services"
+                  name="Services"
+                  parent="menu_subscription_manager_root"
+                  action="action_sm_service"
+                  sequence="10"/>
+        
+        <!-- Subscriptions -->
+        <menuitem id="menu_subscription_subscriptions"
+                  name="Subscriptions"
+                  parent="menu_subscription_manager_root"
+                  action="action_sm_subscription"
+                  sequence="20"/>
+        
+        <!-- Vendors -->
+        <menuitem id="menu_subscription_vendors"
+                  name="Vendors"
+                  parent="menu_subscription_manager_root"
+                  action="action_subscription_vendors"
+                  sequence="30"
+                  groups="group_subscription_finance,group_subscription_admin"/>
+        
+        <!-- Vendor Bills -->
+        <menuitem id="menu_subscription_vendor_bills"
+                  name="Vendor Bills"
+                  parent="menu_subscription_manager_root"
+                  action="action_subscription_vendor_bills"
+                  sequence="35"
+                  groups="group_subscription_finance,group_subscription_admin"/>
+        
+        <!-- Credentials -->
+        <menuitem id="menu_subscription_credentials"
+                  name="Credentials"
+                  parent="menu_subscription_manager_root"
+                  action="action_sm_credential"
+                  sequence="40"
+                  groups="group_subscription_devops,group_subscription_admin"/>
+        
+        <!-- Configuration -->
+        <menuitem id="menu_subscription_config"
+                  name="Configuration"
+                  parent="menu_subscription_manager_root"
+                  sequence="100"
+                  groups="group_subscription_admin"/>
+        
+        <menuitem id="menu_subscription_criticality"
+                  name="Criticality Levels"
+                  parent="menu_subscription_config"
+                  action="action_sm_criticality"
+                  sequence="10"/>
+        
+        <menuitem id="menu_subscription_tags"
+                  name="Service Tags"
+                  parent="menu_subscription_config"
+                  action="action_sm_service_tag"
+                  sequence="20"/>
+        
+    </data>
+</odoo>
