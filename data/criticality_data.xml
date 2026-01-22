@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Default Criticality Levels -->
+        <record id="criticality_low" model="sm.criticality">
+            <field name="name">Low</field>
+            <field name="level">1</field>
+            <field name="alert_days">14</field>
+            <field name="color">10</field>
+            <field name="description">Non-critical services like staging or testing environments</field>
+        </record>
+        
+        <record id="criticality_medium" model="sm.criticality">
+            <field name="name">Medium</field>
+            <field name="level">2</field>
+            <field name="alert_days">21</field>
+            <field name="color">3</field>
+            <field name="description">Internal services that don't directly affect customers</field>
+        </record>
+        
+        <record id="criticality_high" model="sm.criticality">
+            <field name="name">High</field>
+            <field name="level">3</field>
+            <field name="alert_days">30</field>
+            <field name="color">2</field>
+            <field name="description">Production services that are important but not mission-critical</field>
+        </record>
+        
+        <record id="criticality_mission_critical" model="sm.criticality">
+            <field name="name">Mission Critical</field>
+            <field name="level">4</field>
+            <field name="alert_days">45</field>
+            <field name="color">1</field>
+            <field name="description">Core business services - downtime directly impacts revenue and customers</field>
+        </record>
+        
+    </data>
+</odoo>

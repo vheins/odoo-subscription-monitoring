@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Odoo
+*.pyc
+*.pyo
+.*.swp
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporary files
+*.log
+*.pot
+*.mo
+*~
+.~*

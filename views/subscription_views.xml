@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Subscription Tree View -->
+        <record id="view_sm_subscription_tree" model="ir.ui.view">
+            <field name="name">sm.subscription.tree</field>
+            <field name="model">sm.subscription</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="state == 'expired'" 
+                      decoration-warning="state == 'expiring_soon'">
+                    <field name="service_id"/>
+                    <field name="partner_id"/>
+                    <field name="date_start"/>
+                    <field name="billing_interval"/>
+                    <field name="next_renewal_date"/>
+                    <field name="days_left"/>
+                    <field name="amount" sum="Total"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state" widget="badge"/>
+                    <field name="criticality_id" widget="badge" optional="show"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Subscription Form View -->
+        <record id="view_sm_subscription_form" model="ir.ui.view">
+            <field name="name">sm.subscription.form</field>
+            <field name="model">sm.subscription</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="active,expiring_soon,expired"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="subscription_info">
+                                <field name="service_id" options="{'no_create': True}"/>
+                                <field name="partner_id" options="{'no_create': True}"/>
+                                <field name="criticality_id"/>
+                            </group>
+                            <group name="billing_info">
+                                <field name="date_start"/>
+                                <field name="billing_interval"/>
+                                <field name="next_renewal_date"/>
+                                <field name="days_left" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="financial_info">
+                                <field name="amount"/>
+                                <field name="currency_id"/>
+                            </group>
+                            <group name="vendor_bill_info">
+                                <field name="last_bill_id" context="{'default_move_type': 'in_invoice'}"/>
+                                <field name="bill_state" readonly="1"/>
+                                <field name="payment_state" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="description"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Subscription Kanban View -->
+        <record id="view_sm_subscription_kanban" model="ir.ui.view">
+            <field name="name">sm.subscription.kanban</field>
+            <field name="model">sm.subscription</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" default_group_by="state">
+                    <field name="name"/>
+                    <field name="service_id"/>
+                    <field name="partner_id"/>
+                    <field name="next_renewal_date"/>
+                    <field name="days_left"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="state"/>
+                    <field name="criticality_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="service_id"/>
+                                        </strong>
+                                    </div>
+                                    <span class="float-end">
+                                        <field name="criticality_id" widget="badge"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div>
+                                        Vendor: <field name="partner_id"/>
+                                    </div>
+                                    <div>
+                                        Amount: <field name="amount"/> <field name="currency_id"/>
+                                    </div>
+                                    <div class="text-danger" t-if="record.days_left.raw_value &lt;= 0">
+                                        <strong>EXPIRED</strong>
+                                    </div>
+                                    <div class="text-warning" t-elif="record.days_left.raw_value &lt;= 30">
+                                        <strong><field name="days_left"/> days left</strong>
+                                    </div>
+                                    <div t-else="">
+                                        <field name="days_left"/> days left
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        Next Renewal: <field name="next_renewal_date"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        
+        <!-- Subscription Search View -->
+        <record id="view_sm_subscription_search" model="ir.ui.view">
+            <field name="name">sm.subscription.search</field>
+            <field name="model">sm.subscription</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="service_id"/>
+                    <field name="partner_id"/>
+                    <filter string="Active" name="filter_active" domain="[('state', '=', 'active')]"/>
+                    <filter string="Expiring Soon" name="filter_expiring" domain="[('state', '=', 'expiring_soon')]"/>
+                    <filter string="Expired" name="filter_expired" domain="[('state', '=', 'expired')]"/>
+                    <separator/>
+                    <filter string="Expiring in 30 Days" name="filter_expiring_30" 
+                            domain="[('days_left', '&lt;=', 30), ('days_left', '&gt;', 0)]"/>
+                    <filter string="Expiring in 7 Days" name="filter_expiring_7" 
+                            domain="[('days_left', '&lt;=', 7), ('days_left', '&gt;', 0)]"/>
+                    <separator/>
+                    <filter string="No Vendor Bill" name="filter_no_bill" domain="[('last_bill_id', '=', False)]"/>
+                    <filter string="Bill Not Paid" name="filter_not_paid" 
+                            domain="[('last_bill_id', '!=', False), ('payment_state', '!=', 'paid')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Vendor" name="group_vendor" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Service" name="group_service" context="{'group_by': 'service_id'}"/>
+                        <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Criticality" name="group_criticality" context="{'group_by': 'criticality_id'}"/>
+                        <filter string="Start Date" name="group_date_start" context="{'group_by': 'date_start:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Subscription Action -->
+        <record id="action_sm_subscription" model="ir.actions.act_window">
+            <field name="name">Subscriptions</field>
+            <field name="res_model">sm.subscription</field>
+            <field name="view_mode">tree,kanban,form</field>
+        </record>
+        
+    </data>
+</odoo>

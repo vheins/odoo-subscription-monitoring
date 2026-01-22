@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Dashboard Action -->
+        <record id="action_subscription_dashboard" model="ir.actions.client">
+            <field name="name">Dashboard</field>
+            <field name="tag">subscription_manager.dashboard</field>
+        </record>
+        
+        <!-- Alternative: Use a simple kanban dashboard showing key metrics -->
+        <!-- This is a simplified version using existing subscription views -->
+        <record id="action_subscription_dashboard_kanban" model="ir.actions.act_window">
+            <field name="name">Dashboard</field>
+            <field name="res_model">sm.subscription</field>
+            <field name="view_mode">kanban</field>
+            <field name="context">{
+                'group_by': 'state',
+            }</field>
+        </record>
+        
+        <!-- Vendor Filter Action -->
+        <record id="action_subscription_vendors" model="ir.actions.act_window">
+            <field name="name">Vendors</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('supplier_rank', '>', 0)]</field>
+            <field name="context">{'default_supplier_rank': 1}</field>
+        </record>
+        
+        <!-- Vendor Bills Filter Action -->
+        <record id="action_subscription_vendor_bills" model="ir.actions.act_window">
+            <field name="name">Vendor Bills</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="domain">[('move_type', '=', 'in_invoice')]</field>
+            <field name="context">{'default_move_type': 'in_invoice'}</field>
+        </record>
+        
+    </data>
+</odoo>
