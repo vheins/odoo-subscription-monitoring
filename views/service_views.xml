@@ -30,6 +30,7 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                        <button name="action_add_subscription" type="object" string="Add Subscription" class="oe_highlight"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

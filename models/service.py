@@ -122,6 +122,25 @@ class Service(models.Model):
             )
             service.active_subscription_id = active_subs[0] if active_subs else False
 
+    def action_add_subscription(self):
+        """Open a new subscription form pre-filled with this service.
+
+        Returns an action opening `sm.subscription` form in a modal with
+        `default_service_id` set so the user can quickly create a subscription.
+        """
+        self.ensure_one()
+        return {
+            'name': 'Add Subscription',
+            'type': 'ir.actions.act_window',
+            'res_model': 'sm.subscription',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_service_id': self.id,
+                'default_partner_id': self.partner_id.id if self.partner_id else False,
+            },
+        }
+
 
 class ServiceTag(models.Model):
     """Tags for flexible service categorization."""
