@@ -83,6 +83,7 @@
                                         <field name="name"/>
                                         <field name="credential_type"/>
                                         <field name="username"/>
+                                        <field name="password"/>
                                         <field name="url"/>
                                     </tree>
                                 </field>
