@@ -22,8 +22,7 @@ Key Features:
 This module integrates with Odoo Accounting module to use vendor bills as the single
 source of truth for payments, ensuring proper audit trails and financial control.
     """,
-    'author': 'Your Company',
-    'website': 'https://www.yourcompany.com',
+    'author': 'Muhammad Rheza Alfin',
     'license': 'LGPL-3',
     'depends': [
         'base',
@@ -41,12 +40,12 @@ source of truth for payments, ensuring proper audit trails and financial control
         'data/cron_data.xml',
         
         # Views
-        'views/menu_views.xml',
+        'views/dashboard_views.xml',
         'views/criticality_views.xml',
         'views/service_views.xml',
         'views/subscription_views.xml',
         'views/credential_views.xml',
-        'views/dashboard_views.xml',
+        'views/menu_views.xml',
     ],
     'demo': [],
     'installable': True,

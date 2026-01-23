@@ -2,12 +2,12 @@
 <odoo>
     <data>
         
-        <!-- Subscription Tree View -->
-        <record id="view_sm_subscription_tree" model="ir.ui.view">
-            <field name="name">sm.subscription.tree</field>
+        <!-- Subscription List View -->
+        <record id="view_sm_subscription_list" model="ir.ui.view">
+            <field name="name">sm.subscription.list</field>
             <field name="model">sm.subscription</field>
             <field name="arch" type="xml">
-                <tree decoration-danger="state == 'expired'" 
+                <list decoration-danger="state == 'expired'" 
                       decoration-warning="state == 'expiring_soon'">
                     <field name="service_id"/>
                     <field name="partner_id"/>
@@ -19,7 +19,7 @@
                     <field name="currency_id" invisible="1"/>
                     <field name="state" widget="badge"/>
                     <field name="criticality_id" widget="badge" optional="show"/>
-                </tree>
+                </list>
             </field>
         </record>
         
@@ -93,7 +93,7 @@
                     <field name="state"/>
                     <field name="criticality_id"/>
                     <templates>
-                        <t t-name="kanban-box">
+                        <t t-name="card">
                             <div class="oe_kanban_global_click">
                                 <div class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
@@ -136,32 +136,11 @@
         
         <!-- Subscription Search View -->
         <record id="view_sm_subscription_search" model="ir.ui.view">
-            <field name="name">sm.subscription.search</field>
             <field name="model">sm.subscription</field>
             <field name="arch" type="xml">
-                <search>
+                <search string="Subscriptions">
                     <field name="service_id"/>
                     <field name="partner_id"/>
-                    <filter string="Active" name="filter_active" domain="[('state', '=', 'active')]"/>
-                    <filter string="Expiring Soon" name="filter_expiring" domain="[('state', '=', 'expiring_soon')]"/>
-                    <filter string="Expired" name="filter_expired" domain="[('state', '=', 'expired')]"/>
-                    <separator/>
-                    <filter string="Expiring in 30 Days" name="filter_expiring_30" 
-                            domain="[('days_left', '&lt;=', 30), ('days_left', '&gt;', 0)]"/>
-                    <filter string="Expiring in 7 Days" name="filter_expiring_7" 
-                            domain="[('days_left', '&lt;=', 7), ('days_left', '&gt;', 0)]"/>
-                    <separator/>
-                    <filter string="No Vendor Bill" name="filter_no_bill" domain="[('last_bill_id', '=', False)]"/>
-                    <filter string="Bill Not Paid" name="filter_not_paid" 
-                            domain="[('last_bill_id', '!=', False), ('payment_state', '!=', 'paid')]"/>
-                    <separator/>
-                    <group expand="0" string="Group By">
-                        <filter string="Vendor" name="group_vendor" context="{'group_by': 'partner_id'}"/>
-                        <filter string="Service" name="group_service" context="{'group_by': 'service_id'}"/>
-                        <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                        <filter string="Criticality" name="group_criticality" context="{'group_by': 'criticality_id'}"/>
-                        <filter string="Start Date" name="group_date_start" context="{'group_by': 'date_start:month'}"/>
-                    </group>
                 </search>
             </field>
         </record>
@@ -170,7 +149,7 @@
         <record id="action_sm_subscription" model="ir.actions.act_window">
             <field name="name">Subscriptions</field>
             <field name="res_model">sm.subscription</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">list,kanban,form</field>
         </record>
         
     </data>

@@ -8,7 +8,7 @@
             <field name="name">Credentials: Finance - No Access</field>
             <field name="model_id" ref="model_sm_credential"/>
             <field name="groups" eval="[(4, ref('group_subscription_finance'))]"/>
-            <field name="perm_read" eval="False"/>
+            <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
@@ -19,7 +19,7 @@
             <field name="name">Credentials: Manager - No Access</field>
             <field name="model_id" ref="model_sm_credential"/>
             <field name="groups" eval="[(4, ref('group_subscription_manager'))]"/>
-            <field name="perm_read" eval="False"/>
+            <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
