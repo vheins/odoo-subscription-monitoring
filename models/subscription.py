@@ -176,6 +176,13 @@ class Subscription(models.Model):
         string='Criticality',
         store=True
     )
+
+    # Expose service credentials on the subscription for convenience
+    credential_ids = fields.One2many(
+        related='service_id.credential_ids',
+        string='Credentials',
+        readonly=True
+    )
     
     @api.model
     def _cron_check_expiring_subscriptions(self):
