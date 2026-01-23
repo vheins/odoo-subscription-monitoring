@@ -30,8 +30,12 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
+                        <button name="action_create_vendor_bill" 
+                                type="object" 
+                                string="Create Vendor Bill" 
+                                class="oe_highlight"
+                                help="Create a new vendor bill for this subscription"/>
                         <field name="state" widget="statusbar" statusbar_visible="active,expiring_soon,expired"/>
-                        <!-- header stats removed to avoid layout breakage; showing vendor bill info can be moved into the sheet -->
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -80,12 +84,12 @@
                             </page>
                         </notebook>
                     </sheet>
-                </form>
-                    <!-- <div class="oe_chatter">
+                    <div class="oe_chatter">
                         <field name="message_follower_ids"/>
                         <field name="activity_ids"/>
                         <field name="message_ids"/>
-                    </div> -->
+                    </div>
+                </form>
             </field>
         </record>
         

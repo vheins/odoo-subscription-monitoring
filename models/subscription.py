@@ -131,6 +131,34 @@ class Subscription(models.Model):
             if sub.date_start and sub.billing_interval and not sub.next_renewal_date:
                 sub.next_renewal_date = sub.date_start + relativedelta(months=sub.billing_interval)
     
+    def action_create_vendor_bill(self):
+        """Create a new vendor bill for this subscription.
+        Opens vendor bill form with pre-filled values.
+        """
+        self.ensure_one()
+        
+        # Prepare invoice line values
+        invoice_line_vals = {
+            'name': f'Subscription: {self.name}',
+            'quantity': 1,
+            'price_unit': self.amount,
+        }
+        
+        return {
+            'name': 'Create Vendor Bill',
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_move_type': 'in_invoice',
+                'default_partner_id': self.partner_id.id,
+                'default_invoice_date': fields.Date.today(),
+                'default_invoice_line_ids': [(0, 0, invoice_line_vals)],
+                'default_ref': self.name,
+            },
+        }
+
     def renew_subscription(self):
         """Renew subscription by extending the next renewal date.
         This should be called when a vendor bill is marked as paid.
