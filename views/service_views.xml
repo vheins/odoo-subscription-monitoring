@@ -40,8 +40,8 @@
                         <group>
                             <group name="main_info" string="General Information">
                                 <field name="service_type"/>
-                                <field name="partner_id" options="{'no_open': False}"/>
-                                <field name="client_id" options="{'no_open': False}"/>
+                                <field name="partner_id" options="{'no_open': True}"/>
+                                <field name="client_id" options="{'no_open': True}"/>
                             </group>
                             <group name="technical_info" string="Technical Details">
                                 <field name="criticality_id" options="{'no_create': True}"/>
