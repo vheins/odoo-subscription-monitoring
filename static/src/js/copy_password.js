@@ -1,9 +1,6 @@
-odoo.define('subscription_monitoring.copy_password', ['web.rpc', 'web.Dialog', 'web.core'], function (require) {
+odoo.define('subscription_monitoring.copy_password', ['web.rpc', 'web.Dialog', 'web.core'], function (rpc, Dialog, core) {
     "use strict";
 
-    var rpc = require('web.rpc');
-    var Dialog = require('web.Dialog');
-    var core = require('web.core');
     var _t = core._t;
 
     // Bind copy button in reveal wizard
