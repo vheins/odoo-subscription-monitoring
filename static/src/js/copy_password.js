@@ -1,4 +1,4 @@
-odoo.define('subscription_monitoring.copy_password', function (require) {
+odoo.define('subscription_monitoring.copy_password', ['web.rpc', 'web.Dialog', 'web.core'], function (require) {
     "use strict";
 
     var rpc = require('web.rpc');
