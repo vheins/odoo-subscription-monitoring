@@ -88,6 +88,8 @@ class Service(models.Model):
 
     # Dashboard counters
     subscriptions_count = fields.Integer(string='Subscriptions Count', compute='_compute_counts')
+    active_subscriptions_count = fields.Integer(string='Active Subscriptions', compute='_compute_counts')
+    expired_subscriptions_count = fields.Integer(string='Expired Subscriptions', compute='_compute_counts')
     vendor_bills_count = fields.Integer(string='Vendor Bills', compute='_compute_counts')
     vendor_bills_amount = fields.Monetary(string='Vendor Bills Amount', compute='_compute_counts', currency_field='company_currency_id')
     company_currency_id = fields.Many2one('res.currency', string='Company Currency', default=lambda self: self.env.company.currency_id)
@@ -148,10 +150,34 @@ class Service(models.Model):
         }
 
     def action_view_subscriptions(self):
+        """Open all subscriptions for this service."""
         self.ensure_one()
         action = self.env.ref('subscription_monitoring.action_sm_subscription').read()[0]
         action.update({
             'domain': [('service_id', '=', self.id)],
+            'context': {'default_service_id': self.id},
+        })
+        return action
+
+    def action_view_active_subscriptions(self):
+        """Open active subscriptions only (active + expiring_soon)."""
+        self.ensure_one()
+        action = self.env.ref('subscription_monitoring.action_sm_subscription').read()[0]
+        action.update({
+            'domain': [('service_id', '=', self.id), ('state', 'in', ['active', 'expiring_soon'])],
+            'context': {'default_service_id': self.id},
+            'name': 'Active Subscriptions',
+        })
+        return action
+
+    def action_view_expired_subscriptions(self):
+        """Open expired subscriptions only."""
+        self.ensure_one()
+        action = self.env.ref('subscription_monitoring.action_sm_subscription').read()[0]
+        action.update({
+            'domain': [('service_id', '=', self.id), ('state', '=', 'expired')],
+            'context': {'default_service_id': self.id},
+            'name': 'Expired Subscriptions',
         })
         return action
 
@@ -166,11 +192,22 @@ class Service(models.Model):
         })
         return action
 
-    @api.depends('subscription_ids', 'subscription_ids.last_bill_id')
+    @api.depends('subscription_ids', 'subscription_ids.last_bill_id', 'subscription_ids.state')
     def _compute_counts(self):
+        """Compute dashboard counters for smart buttons."""
         for service in self:
             subs = service.subscription_ids
             service.subscriptions_count = len(subs)
+            
+            # Active subscriptions (active + expiring_soon states)
+            active_subs = subs.filtered(lambda s: s.state in ['active', 'expiring_soon'])
+            service.active_subscriptions_count = len(active_subs)
+            
+            # Expired subscriptions
+            expired_subs = subs.filtered(lambda s: s.state == 'expired')
+            service.expired_subscriptions_count = len(expired_subs)
+            
+            # Vendor bills stats
             bills = subs.mapped('last_bill_id')
             service.vendor_bills_count = len(bills)
             total = sum(bill.amount_total or 0.0 for bill in bills)
