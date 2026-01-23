@@ -83,7 +83,8 @@
                                         <field name="name"/>
                                         <field name="credential_type"/>
                                         <field name="username"/>
-                                        <field name="password"/>
+                                        <field name="password_mask" string="Password"/>
+                                        <field name="password" groups="subscription_monitoring.group_subscription_devops,subscription_monitoring.group_subscription_admin"/>
                                         <field name="url"/>
                                     </tree>
                                 </field>

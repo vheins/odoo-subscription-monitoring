@@ -37,4 +37,20 @@ class Credential(models.Model):
     
     notes = fields.Text(string='Notes')
     
+    # Masked password helper (visible to all as masked)
+    password_mask = fields.Char(
+        string='Password Mask',
+        compute='_compute_password_mask',
+        readonly=True,
+    )
+
     # Security: These fields will be restricted via record rules
+
+    @api.depends('password')
+    def _compute_password_mask(self):
+        for rec in self:
+            if rec.password:
+                # show fixed-length mask to avoid revealing password length
+                rec.password_mask = '••••••'
+            else:
+                rec.password_mask = ''
