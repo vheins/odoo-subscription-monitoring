@@ -9,26 +9,19 @@
             <field name="sequence">10</field>
         </record>
 
-        <!-- Privileges -->
-        <record id="privilege_subscription_manager" model="res.groups.privilege">
-            <field name="name">Subscription Management</field>
-            <field name="category_id" ref="module_category_subscription_manager"/>
-            <field name="description">Access levels for subscription management</field>
-        </record>
-        
         <!-- Groups -->
         
         <!-- Manager (Read-Only) -->
         <record id="group_subscription_manager" model="res.groups">
             <field name="name">Manager</field>
-            <field name="privilege_id" ref="privilege_subscription_manager"/>
+            
             <field name="comment">Read-only access to services and subscriptions for strategic overview</field>
         </record>
         
         <!-- Finance -->
         <record id="group_subscription_finance" model="res.groups">
             <field name="name">Finance</field>
-            <field name="privilege_id" ref="privilege_subscription_manager"/>
+            
             <field name="implied_ids" eval="[(4, ref('group_subscription_manager'))]"/>
             <field name="comment">Manage subscriptions and vendor bills, no access to credentials</field>
         </record>
@@ -36,7 +29,7 @@
         <!-- DevOps -->
         <record id="group_subscription_devops" model="res.groups">
             <field name="name">DevOps</field>
-            <field name="privilege_id" ref="privilege_subscription_manager"/>
+            
             <field name="implied_ids" eval="[(4, ref('group_subscription_manager'))]"/>
             <field name="comment">Manage services and view credentials, read-only on financial data</field>
         </record>
@@ -44,7 +37,7 @@
         <!-- Admin -->
         <record id="group_subscription_admin" model="res.groups">
             <field name="name">Admin</field>
-            <field name="privilege_id" ref="privilege_subscription_manager"/>
+            
             <field name="implied_ids" eval="[(4, ref('group_subscription_finance')), (4, ref('group_subscription_devops'))]"/>
             <field name="comment">Full access to all subscription management features</field>
         </record>

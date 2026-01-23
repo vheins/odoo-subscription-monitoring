@@ -5,7 +5,7 @@
         <!-- Dashboard Action -->
         <record id="action_subscription_dashboard" model="ir.actions.client">
             <field name="name">Dashboard</field>
-            <field name="tag">odoo_subscription_monitoring.dashboard</field>
+            <field name="tag">subscription_monitoring.dashboard</field>
         </record>
         
         <!-- Alternative: Use a simple kanban dashboard showing key metrics -->

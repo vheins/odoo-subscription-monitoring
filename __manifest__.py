@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Subscription Manager',
-    'version': '19.0.1.0.0',
+    'version': '17.0.1.0.0',
     'category': 'Services',
     'summary': 'Monitor and manage infrastructure subscriptions and prevent service downtime',
     'description': """

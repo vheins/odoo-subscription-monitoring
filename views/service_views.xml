@@ -38,13 +38,13 @@
                             </h1>
                         </div>
                         <group>
-                            <group name="main_info">
+                            <group name="main_info" string="General Information">
                                 <field name="service_type"/>
-                                <field name="partner_id" options="{'no_create': True}"/>
-                                <field name="client_id" options="{'no_create': True}"/>
-                                <field name="criticality_id" options="{'no_create': True}"/>
+                                <field name="partner_id" options="{'no_create': True, 'no_open': False}"/>
+                                <field name="client_id" options="{'no_create': True, 'no_open': False}"/>
                             </group>
-                            <group name="technical_info">
+                            <group name="technical_info" string="Technical Details">
+                                <field name="criticality_id" options="{'no_create': True}"/>
                                 <field name="ip_address"/>
                                 <field name="hostname"/>
                                 <field name="location"/>
@@ -92,12 +92,12 @@
                             </page>
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
+                </form>
+                    <!-- <div class="oe_chatter">
                         <field name="message_follower_ids"/>
                         <field name="activity_ids"/>
                         <field name="message_ids"/>
-                    </div>
-                </form>
+                    </div> -->
             </field>
         </record>
         
