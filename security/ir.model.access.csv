@@ -17,3 +17,6 @@ access_sm_subscription_devops,sm.subscription.devops,model_sm_subscription,group
 access_sm_subscription_admin,sm.subscription.admin,model_sm_subscription,group_subscription_admin,1,1,1,1
 access_sm_credential_devops,sm.credential.devops,model_sm_credential,group_subscription_devops,1,1,1,0
 access_sm_credential_admin,sm.credential.admin,model_sm_credential,group_subscription_admin,1,1,1,1
+access_sm_credential_audit,sm.credential.audit,model_sm_credential_access_log,group_subscription_admin,1,0,0,0
+access_sm_credential_audit_devops,sm.credential.audit.devops,model_sm_credential_access_log,group_subscription_devops,1,0,0,0
+access_sm_credential_reveal,sm.credential.reveal,model_sm_credential_reveal_wizard,,1,0,0,0

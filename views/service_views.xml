@@ -83,8 +83,9 @@
                                         <field name="name"/>
                                         <field name="credential_type"/>
                                         <field name="username"/>
-                                        <field name="password_mask" string="Password"/>
+                                        <field name="password_mask" string="Secret"/>
                                         <field name="password" groups="subscription_monitoring.group_subscription_devops,subscription_monitoring.group_subscription_admin"/>
+                                        <button type="object" name="action_reveal_password" string="Reveal" class="o_copy_password" attrs="{ 'invisible': [('password','=',False)] }"/>
                                         <field name="url"/>
                                     </tree>
                                 </field>
