@@ -40,8 +40,8 @@
                         <group>
                             <group name="main_info" string="General Information">
                                 <field name="service_type"/>
-                                <field name="partner_id" options="{'no_create': True, 'no_open': False}"/>
-                                <field name="client_id" options="{'no_create': True, 'no_open': False}"/>
+                                <field name="partner_id" options="{'no_open': False}"/>
+                                <field name="client_id" options="{'no_open': False}"/>
                             </group>
                             <group name="technical_info" string="Technical Details">
                                 <field name="criticality_id" options="{'no_create': True}"/>
@@ -117,7 +117,7 @@
                     <field name="days_left"/>
                     <field name="tag_ids"/>
                     <templates>
-                        <t t-name="card">
+                        <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
                                 <div class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">

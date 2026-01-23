@@ -40,8 +40,8 @@
                         </div>
                         <group>
                             <group name="subscription_info">
-                                <field name="service_id" options="{'no_create': True}"/>
-                                <field name="partner_id" options="{'no_create': True}"/>
+                                <field name="service_id" options="{}"/>
+                                <field name="partner_id"/>
                                 <field name="criticality_id"/>
                             </group>
                             <group name="billing_info">
@@ -93,7 +93,7 @@
                     <field name="state"/>
                     <field name="criticality_id"/>
                     <templates>
-                        <t t-name="card">
+                        <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
                                 <div class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
