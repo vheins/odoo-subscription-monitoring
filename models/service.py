@@ -85,6 +85,12 @@ class Service(models.Model):
         'service_id',
         string='Credentials'
     )
+
+    # Dashboard counters
+    subscriptions_count = fields.Integer(string='Subscriptions Count', compute='_compute_counts')
+    vendor_bills_count = fields.Integer(string='Vendor Bills', compute='_compute_counts')
+    vendor_bills_amount = fields.Monetary(string='Vendor Bills Amount', compute='_compute_counts', currency_field='company_currency_id')
+    company_currency_id = fields.Many2one('res.currency', string='Company Currency', default=lambda self: self.env.company.currency_id)
     
     # Computed fields for display
     next_renewal_date = fields.Date(
@@ -140,6 +146,35 @@ class Service(models.Model):
                 'default_partner_id': self.partner_id.id if self.partner_id else False,
             },
         }
+
+    def action_view_subscriptions(self):
+        self.ensure_one()
+        action = self.env.ref('subscription_monitoring.action_sm_subscription').read()[0]
+        action.update({
+            'domain': [('service_id', '=', self.id)],
+        })
+        return action
+
+    def action_view_vendor_bills(self):
+        """Open vendor bills related to this service via subscriptions."""
+        self.ensure_one()
+        # collect related bill ids from subscriptions
+        bill_ids = self.mapped('subscription_ids.last_bill_id').ids
+        action = self.env.ref('account.action_move_in_invoice_type').read()[0]
+        action.update({
+            'domain': [('id', 'in', bill_ids)],
+        })
+        return action
+
+    @api.depends('subscription_ids', 'subscription_ids.last_bill_id')
+    def _compute_counts(self):
+        for service in self:
+            subs = service.subscription_ids
+            service.subscriptions_count = len(subs)
+            bills = subs.mapped('last_bill_id')
+            service.vendor_bills_count = len(bills)
+            total = sum(bill.amount_total or 0.0 for bill in bills)
+            service.vendor_bills_amount = total
 
 
 class ServiceTag(models.Model):

@@ -278,6 +278,26 @@ class Subscription(models.Model):
                     'date_deadline': date.today(),
                 })
 
+    # Expose billing stats for subscription
+    vendor_bill_amount = fields.Monetary(string='Vendor Bill Amount', compute='_compute_bill_amount', store=True, currency_field='company_currency_id')
+    company_currency_id = fields.Many2one('res.currency', string='Company Currency', default=lambda self: self.env.company.currency_id)
+
+    @api.depends('last_bill_id', 'last_bill_id.amount_total')
+    def _compute_bill_amount(self):
+        for sub in self:
+            if sub.last_bill_id:
+                sub.vendor_bill_amount = sub.last_bill_id.amount_total or 0.0
+            else:
+                sub.vendor_bill_amount = 0.0
+
+    def action_view_vendor_bill(self):
+        self.ensure_one()
+        if not self.last_bill_id:
+            return {'type': 'ir.actions.act_window_close'}
+        action = self.env.ref('account.action_move_in_invoice_type').read()[0]
+        action.update({'domain': [('id', '=', self.last_bill_id.id)], 'views': [(self.env.ref('account.view_move_form').id, 'form')]})
+        return action
+
 
 class AccountMove(models.Model):
     """Extend account.move to trigger subscription renewal when bill is paid."""
