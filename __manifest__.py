@@ -46,12 +46,11 @@ source of truth for payments, ensuring proper audit trails and financial control
         'views/subscription_views.xml',
         'views/credential_views.xml',
         'views/menu_views.xml',
-        # Reveal wizard + assets
-        'views/credential_reveal_views.xml',
+        # Reveal wizard removed
     ],
     'assets': {
         'web.assets_backend': [
-            'subscription_monitoring/static/src/js/copy_password.js',
+            # copy_password asset removed
         ],
     },
     'demo': [],

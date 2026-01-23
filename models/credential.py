@@ -57,44 +57,13 @@ class Credential(models.Model):
                 rec.password_mask = ''
 
     def action_reveal_password(self):
-        """Open a reveal wizard showing the plain password and log the reveal action.
-
-        Only users in DevOps or Admin groups are allowed to reveal.
-        """
-        self.ensure_one()
-        allowed = self.env.user.has_group('subscription_monitoring.group_subscription_devops') or self.env.user.has_group('subscription_monitoring.group_subscription_admin')
-        if not allowed:
-            raise AccessError('You are not allowed to reveal credentials')
-
-        # create audit log
-        self.env['sm.credential.access.log'].create({
-            'credential_id': self.id,
-            'user_id': self.env.user.id,
-            'action': 'reveal',
-        })
-
-        wizard = self.env['sm.credential.reveal.wizard'].create({'password': self.password or ''})
-        return {
-            'name': 'Reveal Password',
-            'type': 'ir.actions.act_window',
-            'res_model': 'sm.credential.reveal.wizard',
-            'res_id': wizard.id,
-            'view_mode': 'form',
-            'target': 'new',
-        }
+        # Reveal action removed — kept for API compatibility (no-op).
+        return True
 
     def rpc_log_copy(self):
         """RPC method used by JS to log a copy action.
 
         Returns True on success.
         """
-        for rec in self:
-            # restrict to allowed groups
-            if not (self.env.user.has_group('subscription_monitoring.group_subscription_devops') or self.env.user.has_group('subscription_monitoring.group_subscription_admin')):
-                raise AccessError('You are not allowed to copy credentials')
-            self.env['sm.credential.access.log'].create({
-                'credential_id': rec.id,
-                'user_id': self.env.user.id,
-                'action': 'copy',
-            })
+        # Copy logging removed; return True for compatibility.
         return True
