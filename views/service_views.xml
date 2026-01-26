@@ -12,14 +12,24 @@
                     <field name="service_icon"/>
                     <field name="name"/>
                     <field name="service_type"/>
+                    <field name="partner_id" optional="hide"/>
+                    <field name="client_id" optional="show"/>
+                    <!-- Import-friendly fields -->
+                    <field name="ip_address" optional="show"/>
+                    <field name="hostname" optional="hide"/>
+                    <field name="location" optional="hide"/>
+                    <field name="cpu_cores" optional="hide"/>
+                    <field name="memory_value" optional="hide"/>
+                    <field name="memory_unit" optional="hide"/>
+                    <field name="storage_value" optional="hide"/>
+                    <field name="storage_unit" optional="hide"/>
                     <field name="server_spec_display"/>
-                    <field name="partner_id"/>
-                    <field name="client_id" optional="hide"/>
-                    <field name="criticality_id" widget="badge"/>
+                    <field name="criticality_id" optional="hide" widget="badge"/>
                     <field name="state" widget="badge"/>
                     <field name="subscription_state" widget="badge" optional="show"/>
                     <field name="next_renewal_date" optional="show"/>
                     <field name="days_left" optional="show"/>
+                    <field name="vendor_bills_amount" optional="hide" widget="monetary" options="{'currency_field': 'company_currency_id'}"/>
                 </tree>
             </field>
         </record>

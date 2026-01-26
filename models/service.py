@@ -189,20 +189,7 @@ class Service(models.Model):
         }
         for rec in self:
             rec.service_icon = mapping.get(rec.service_type, '')
-
-    @api.constrains('cpu_cores', 'memory_value', 'storage_value')
-    def _check_server_spec(self):
-        from odoo.exceptions import ValidationError
-        for rec in self:
-            if rec.cpu_cores is not False and rec.cpu_cores is not None:
-                if rec.cpu_cores <= 0:
-                    raise ValidationError('CPU cores must be greater than 0')
-            if rec.memory_value is not False and rec.memory_value is not None:
-                if rec.memory_value <= 0:
-                    raise ValidationError('Memory must be greater than 0')
-            if rec.storage_value is not False and rec.storage_value is not None:
-                if rec.storage_value <= 0:
-                    raise ValidationError('Storage must be greater than 0')
+    
     
     @api.depends('subscription_ids', 'subscription_ids.state')
     def _compute_active_subscription(self):
