@@ -68,6 +68,9 @@
                             </group>
                         </group>
                         <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="description"/>
+                            </page>
                             <page string="Credentials" name="credentials" groups="subscription_monitoring.group_subscription_devops,subscription_monitoring.group_subscription_admin">
                                 <field name="credential_ids">
                                     <tree>
@@ -78,9 +81,6 @@
                                         <field name="url"/>
                                     </tree>
                                 </field>
-                            </page>
-                            <page string="Notes" name="notes">
-                                <field name="description"/>
                             </page>
                         </notebook>
                     </sheet>

@@ -9,8 +9,10 @@
             <field name="arch" type="xml">
                     <tree decoration-danger="subscription_state == 'expired'" 
                         decoration-warning="subscription_state == 'expiring_soon'">
+                    <field name="service_icon"/>
                     <field name="name"/>
                     <field name="service_type"/>
+                    <field name="server_spec_display"/>
                     <field name="partner_id"/>
                     <field name="client_id" optional="hide"/>
                     <field name="criticality_id" widget="badge"/>
@@ -90,11 +92,30 @@
                                 <field name="hostname"/>
                                 <field name="location"/>
                             </group>
+                            <group name="server_spec" string="Server Specification">
+                                <group>
+                                    <field name="cpu_cores"/>
+                                </group>
+                                <group>
+                                    <field name="memory_value"/>
+                                    <field name="memory_unit"/>
+                                </group>
+                                <group>
+                                    <field name="storage_value"/>
+                                    <field name="storage_unit"/>
+                                </group>
+                                <group>
+                                    <field name="server_spec_display" readonly="1"/>
+                                </group>
+                            </group>
                         </group>
                         <group>
                             <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                         </group>
                         <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="description"/>
+                            </page>
                             <page string="Active Subscription" name="active_subscription">
                                 <group>
                                     <group>
@@ -128,9 +149,6 @@
                                         <field name="url"/>
                                     </tree>
                                 </field>
-                            </page>
-                            <page string="Notes" name="notes">
-                                <field name="description"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -180,6 +198,9 @@
                                     <div>
                                         Vendor: <field name="partner_id"/>
                                     </div>
+                                    <div t-if="record.server_spec_display.raw_value">
+                                        <strong>Spec:</strong> <field name="server_spec_display"/>
+                                    </div>
                                     <div t-if="record.next_renewal_date.raw_value">
                                         Renewal: <field name="next_renewal_date"/>
                                         (<field name="days_left"/> days)
@@ -187,12 +208,16 @@
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
-                                        <field name="subscription_state" widget="label_selection" 
-                                               options="{'classes': {'active': 'success', 'expiring_soon': 'warning', 'expired': 'danger'}}"/>
-                                    </div>
-                                    <div class="oe_kanban_bottom_right">
-                                        <field name="state" widget="label_selection"/>
-                                    </div>
+                                            <i class="fa fa-calendar me-1"/>
+                                            <span class="text-muted small me-1">Subscription:</span>
+                                            <field name="subscription_state" widget="label_selection" 
+                                                   options="{'classes': {'active': 'success', 'expiring_soon': 'warning', 'expired': 'danger'}}"/>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <i class="fa fa-server me-1"/>
+                                            <span class="text-muted small me-1">Service:</span>
+                                            <field name="state" widget="label_selection"/>
+                                        </div>
                                 </div>
                             </div>
                         </t>

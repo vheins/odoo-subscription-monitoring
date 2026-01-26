@@ -120,6 +120,89 @@ class Service(models.Model):
         string='Tags',
         help='Flexible categorization tags'
     )
+
+    # Server specification (structured, informational only)
+    cpu_cores = fields.Integer(
+        string='CPU Cores',
+        help='Number of CPU cores (e.g. 1, 2, 4)'
+    )
+    memory_value = fields.Integer(
+        string='Memory',
+        help='Memory capacity value (number only)'
+    )
+    memory_unit = fields.Selection([
+        ('mb', 'MB'),
+        ('gb', 'GB'),
+        ('tb', 'TB'),
+    ], string='Memory Unit', default='gb')
+    storage_value = fields.Integer(
+        string='Storage',
+        help='Storage capacity value (number only)'
+    )
+    storage_unit = fields.Selection([
+        ('gb', 'GB'),
+        ('tb', 'TB'),
+    ], string='Storage Unit', default='gb')
+
+    server_spec_display = fields.Char(
+        string='Server Specification',
+        compute='_compute_server_spec_display',
+        store=True,
+        help='Human readable summary of CPU / Memory / Storage'
+    )
+
+    @api.depends('cpu_cores', 'memory_value', 'memory_unit', 'storage_value', 'storage_unit')
+    def _compute_server_spec_display(self):
+        """Build a concise, human-readable server specification string."""
+        unit_map = {'mb': 'MB', 'gb': 'GB', 'tb': 'TB'}
+        for rec in self:
+            parts = []
+            if rec.cpu_cores:
+                parts.append('CPU: %s Core' % (rec.cpu_cores,))
+            if rec.memory_value:
+                mu = unit_map.get(rec.memory_unit or 'gb', 'GB')
+                parts.append('Memory: %s %s' % (rec.memory_value, mu))
+            if rec.storage_value:
+                su = unit_map.get(rec.storage_unit or 'gb', 'GB')
+                parts.append('Storage: %s %s' % (rec.storage_value, su))
+            rec.server_spec_display = ' — '.join(parts) if parts else ''
+
+    service_icon = fields.Char(
+        string='Icon',
+        compute='_compute_service_icon',
+        store=True,
+        help='Small visual icon (emoji) representing the service type for list views'
+    )
+
+    @api.depends('service_type')
+    def _compute_service_icon(self):
+        mapping = {
+            'vps': '🖥️',
+            'dedicated': '🖥️',
+            'cloud': '☁️',
+            'domain': '🌐',
+            'ssl': '🔒',
+            'email': '✉️',
+            'storage': '🗄️',
+            'cdn': '⚡',
+            'other': '🔧',
+        }
+        for rec in self:
+            rec.service_icon = mapping.get(rec.service_type, '')
+
+    @api.constrains('cpu_cores', 'memory_value', 'storage_value')
+    def _check_server_spec(self):
+        from odoo.exceptions import ValidationError
+        for rec in self:
+            if rec.cpu_cores is not False and rec.cpu_cores is not None:
+                if rec.cpu_cores <= 0:
+                    raise ValidationError('CPU cores must be greater than 0')
+            if rec.memory_value is not False and rec.memory_value is not None:
+                if rec.memory_value <= 0:
+                    raise ValidationError('Memory must be greater than 0')
+            if rec.storage_value is not False and rec.storage_value is not None:
+                if rec.storage_value <= 0:
+                    raise ValidationError('Storage must be greater than 0')
     
     @api.depends('subscription_ids', 'subscription_ids.state')
     def _compute_active_subscription(self):
