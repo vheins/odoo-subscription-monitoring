@@ -48,6 +48,10 @@ source of truth for payments, ensuring proper audit trails and financial control
         'views/menu_views.xml',
         # Reveal wizard removed
     ],
+    'images': [
+        'static/description/icon.png',
+        'static/description/icon.svg',
+    ],
     'assets': {
         'web.assets_backend': [
             # copy_password asset removed
